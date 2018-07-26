@@ -60,7 +60,7 @@ var score = 0;
 
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
-
+document.addEventListener("mousemove", mouseMoveHandler, false);
 
 
 // FUNCTIONS 
@@ -129,6 +129,12 @@ function keyUpHandler(elem) {
     }
 }
 
+function mouseMoveHandler(elem){
+    var relativeX = elem.clientX - canvas.offsetLeft;
+    if(relativeX > 0 && relativeX < canvas.width){
+        paddleX = relativeX - paddleW/2;
+    }
+}
 
 
 function collision() {
