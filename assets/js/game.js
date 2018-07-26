@@ -36,29 +36,39 @@ var paddleX = (canvas.width - paddleW) / 2;
 var rightPressed = false;
 var leftPressed = false;
 
+// Brick variables
+ var brickRow = 3;
+ var brickCol = 3;
+ var brickW = 75;
+ var brickH = 20;
+ var brickPad = 10;
+ var brickOffsetTop = 30;
+ var brickOffsetLeft = 30;
 
+ // Bricks array
+var bricks = [];
+for(var c=0; c<brickCol; c++){
+    bricks[c] = [];
+    for (var r=0; r<brickRow; r++){
+        bricks[c][r] = {x: 0, y: 0};
+    }
+}
 
 // Button handlers
 
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
 
-// Function that draws the ball.
 
-function ball() {
+// FUNCTIONS 
 
-    context.beginPath();
-    context.arc(x, y, r, 0, Math.PI * 2);
 
-    context.fill();
-    context.closePath();
-}
-
-// Drawing the ball moving
+// function that draws the game
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     ball();
     paddle();
+    bricks();
 
     // Function that allows the ball to bounce off off walls.
     if (x + dx > canvas.width - r || x + dx < r) {
@@ -97,12 +107,39 @@ function draw() {
 
 }
 
+// Function that draws the ball.
+function ball() {
+
+    context.beginPath();
+    context.arc(x, y, r, 0, Math.PI * 2);
+
+    context.fill();
+    context.closePath();
+}
+
+// Function that draws the paddle.
 function paddle() {
     context.beginPath();
     context.rect(paddleX, canvas.height - paddleH, paddleW, paddleH);
 
     context.fill();
     context.closePath();
+}
+
+// Function that draws the bricks.
+function bricks(){
+    for(var c=0; c<brickCol; c++){
+        for(var r=0; r<brickRow; r++){
+            var brickX = (c*(brickW+brickPad))+brickOffsetLeft;
+            var brickY = (c*(brickH+brickPad))+brickOffsetTop;
+            bricks[][].x = brickX;
+            bricks[][].y = brickY;
+            context.beginPath();
+            context.rect(0,0,brickW, brickH);
+            context.fill();
+            context.closePath();
+        }
+    }
 }
 
 function keyDownHandler(elem) {
