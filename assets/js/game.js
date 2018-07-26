@@ -53,11 +53,14 @@ for (var c = 0; c < brickCol; c++) {
         bricks[c][r] = { x: 0, y: 0, status: 1 };
     }
 }
+// Score counter
+var score = 0;
 
 // Button handlers
 
 document.addEventListener("keyup", keyUpHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
+
 
 
 // FUNCTIONS 
@@ -103,6 +106,11 @@ function brick() {
     }
 }
 
+function totalScore(){
+    context.font = "16px Times New Roman";
+    context.fillText("Score: "+score, 8,20);
+}
+
 function keyDownHandler(elem) {
     if (elem.keyCode == 39) {
         rightPressed = true;
@@ -121,6 +129,8 @@ function keyUpHandler(elem) {
     }
 }
 
+
+
 function collision() {
     for (var c = 0; c < brickCol; c++) {
         for (var r = 0; r < brickRow; r++) {
@@ -129,6 +139,11 @@ function collision() {
                 if (x > b.x && x < b.x + brickW && y > b.y && y < b.y + brickH) {
                     dy = -dy;
                     b.status=0;
+                    score++;
+                    if(score == brickRow*brickCol) {
+                        alert("You have won!");
+                        document.location.reload();
+                    }
                 }
             }
         }
@@ -141,6 +156,7 @@ function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     ball();
     paddle();
+    totalScore();
     collision();
     brick();
 
