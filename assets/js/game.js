@@ -37,20 +37,20 @@ var rightPressed = false;
 var leftPressed = false;
 
 // Brick variables
- var brickRow = 3;
- var brickCol = 3;
- var brickW = 75;
- var brickH = 20;
- var brickPad = 10;
- var brickOffsetTop = 30;
- var brickOffsetLeft = 30;
+var brickRow = 3;
+var brickCol = 3;
+var brickW = 75;
+var brickH = 20;
+var brickPad = 10;
+var brickOffsetTop = 30;
+var brickOffsetLeft = 30;
 
- // Bricks array
+// Bricks array
 var bricks = [];
-for(var c=0; c<brickCol; c++){
+for (var c = 0; c < brickCol; c++) {
     bricks[c] = [];
-    for (var r=0; r<brickRow; r++){
-        bricks[c][r] = {x: 0, y: 0};
+    for (var r = 0; r < brickRow; r++) {
+        bricks[c][r] = { x: 0, y: 0, status: 1 };
     }
 }
 
@@ -63,49 +63,7 @@ document.addEventListener("keydown", keyDownHandler, false);
 // FUNCTIONS 
 
 
-// function that draws the game
-function draw() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    ball();
-    paddle();
-    bricks();
 
-    // Function that allows the ball to bounce off off walls.
-    if (x + dx > canvas.width - r || x + dx < r) {
-        dx = -dx;
-        context.fillStyle = "blue";
-        context.fill();
-    }
-
-    // Function that allows the ball to bounce off off the paddle 
-    // otherwise making the game end.
-    if (y + dy < r) {
-        dy = -dy;
-    } else if (y + dy > canvas.height - r) {
-        if (x > paddleX && x < paddleX + paddleW) {
-            dy = -dy-1;
-
-        }
-        else {
-            alert("GAME OVER");
-            document.location.reload();
-        }
-    }
-
-    if (rightPressed && paddleX < canvas.width - paddleW) {
-        paddleX += 7;
-    }
-
-    if (leftPressed && paddleX > 0) {
-        paddleX -= 7;
-    }
-
-
-
-    x += dx;
-    y += dy;
-
-}
 
 // Function that draws the ball.
 function ball() {
@@ -127,17 +85,20 @@ function paddle() {
 }
 
 // Function that draws the bricks.
-function bricks(){
-    for(var c=0; c<brickCol; c++){
-        for(var r=0; r<brickRow; r++){
-            var brickX = (c*(brickW+brickPad))+brickOffsetLeft;
-            var brickY = (c*(brickH+brickPad))+brickOffsetTop;
-            bricks[][].x = brickX;
-            bricks[][].y = brickY;
-            context.beginPath();
-            context.rect(0,0,brickW, brickH);
-            context.fill();
-            context.closePath();
+function brick() {
+    for (var c = 0; c < brickCol; c++) {
+        for (var r = 0; r < brickRow; r++) {
+            if (bricks[c][r].status == 1) {
+                var brickX = (c * (brickW + brickPad)) + brickOffsetLeft;
+                var brickY = (c * (brickH + brickPad)) + brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                context.beginPath();
+                context.rect(brickX, brickY, brickW, brickH);
+                context.strokeStyle = "red";
+                context.stroke();
+                context.closePath();
+            }
         }
     }
 }
@@ -160,8 +121,65 @@ function keyUpHandler(elem) {
     }
 }
 
+function collision() {
+    for (var c = 0; c < brickCol; c++) {
+        for (var r = 0; r < brickRow; r++) {
+            var b = bricks[c][r];
+            if (b.status == 1) {
+                if (x > b.x && x < b.x + brickW && y > b.y && y < b.y + brickH) {
+                    dy = -dy;
+                    b.status=0;
+                }
+            }
+        }
+    }
+}
 
 
+// function that draws the game
+function draw() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    ball();
+    paddle();
+    collision();
+    brick();
+
+    // Function that allows the ball to bounce off off walls.
+    if (x + dx > canvas.width - r || x + dx < r) {
+        dx = -dx;
+        context.fillStyle = "blue";
+        context.fill();
+    }
+
+    // Function that allows the ball to bounce off off the paddle 
+    // otherwise making the game end.
+    if (y + dy < r) {
+        dy = -dy;
+    } else if (y + dy > canvas.height - r) {
+        if (x > paddleX && x < paddleX + paddleW) {
+            dy = -dy - 1;
+
+        }
+        else {
+            alert("GAME OVER");
+            document.location.reload();
+        }
+    }
+
+    if (rightPressed && paddleX < canvas.width - paddleW) {
+        paddleX += 7;
+    }
+
+    if (leftPressed && paddleX > 0) {
+        paddleX -= 7;
+    }
+
+
+
+    x += dx;
+    y += dy;
+
+}
 
 
 
